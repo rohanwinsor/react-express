@@ -8,6 +8,7 @@ const User = require("./user");
 const jwt = require("jsonwebtoken")
 
 
+let refreshTokens = []
 const url = 'mongodb://localhost/mydb2'
 mongoose.connect(url);
 const con = mongoose.connection;
@@ -56,6 +57,21 @@ app.post('/users/register', async (req, res) => {
    
 })
 
+app.post('/token', (req, res) => {
+  const refreshToken = req.body.token
+  if (refreshToken == null) return res.sendStatus(401)
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    const accessToken = generateAccessToken({ name: user.name })
+    res.json({ accessToken: accessToken })
+  })
+})
+
+app.delete('/logout', (req, res) => {
+  refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+  res.sendStatus(204)
+})
 app.post('/users/login', async (req, res) => {
   try{
     let output;
@@ -65,9 +81,16 @@ app.post('/users/login', async (req, res) => {
       }
       console.log(doc)
       if(await bcrypt.compare(req.body.password, doc.password)) {
-        const emailid = req.body.emailid
-        const accessToken = jwt.sign(emailid, process.env.ACCESS_TOKEN_SECRET)
-        res.send({acessToken : accessToken})
+        try{
+          const emailid = req.body.emailid
+          const accessToken = generateAccessToken(emailid)
+          const refreshToken = jwt.sign(emailid, process.env.REFRESH_TOKEN_SECRET)
+          refreshTokens.push(refreshToken)
+          res.json({ accessToken: accessToken, refreshToken: refreshToken })
+        } catch (err){
+          console.log(err)
+          res.send(err)
+        }
       } else {
         res.send('Not Allowed')
 
@@ -78,6 +101,11 @@ app.post('/users/login', async (req, res) => {
     res.send(e)
   }
 })
+
+
+function generateAccessToken(emailid) {
+  return jwt.sign({data : emailid}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
+}
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization']
@@ -91,4 +119,5 @@ function authenticateToken(req, res, next) {
     next()
   })
 }
+
 app.listen(8000)

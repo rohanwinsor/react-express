@@ -8,14 +8,14 @@ function Register(props) {
     
     const register = () => {
         const body = { 
-            email : registerEmail,
+            emailid : registerEmail,
             username : registerUser,
             password: registerPassword}
             axios({
                 method : "post",
                 data : body,
                 withCredentials : true,
-                url : "http://localhost:8000/register"
+                url : "http://localhost:8000/users/register"
             })
             }
     return (

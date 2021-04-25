@@ -4,7 +4,6 @@ import axios from "axios";
 function Login() {
     const [data, setData] = useState("NO ONE");
     const getUser = () => {
-        console.log(localStorage.getItem("acessToken"))
         console.log("getUser")
         const config = {
           method: 'get',
