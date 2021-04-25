@@ -21,6 +21,11 @@ function Navbar() {
                         WHOSI
                     </li>
                     </Link>
+                    <Link to="logout">
+                    <li>
+                        LOGOUT
+                    </li>
+                    </Link>
                 </ul>
             </nav>
         </div>
