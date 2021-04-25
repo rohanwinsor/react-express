@@ -18,7 +18,7 @@ function Navbar() {
                     </Link>
                     <Link to="whois">
                     <li>
-                        WHOSI
+                        WHOIS
                     </li>
                     </Link>
                     <Link to="logout">
