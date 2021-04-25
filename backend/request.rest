@@ -1,0 +1,27 @@
+
+
+GET http://localhost:8000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.Uk9IQU4.zxl9pMHmPx3Rv9UsaxDMhV8GZ_oZdEe099XLL7rZmK0
+
+###
+
+POST http://localhost:8000/users/register 
+Content-Type: application/json
+
+{
+    "emailid": "ASDFSADF", 
+    "username" : "username",  
+    "password": "pasasfsdfsword"
+
+}
+
+###
+
+POST http://localhost:8000/users/login 
+Content-Type: application/json
+
+{
+    "emailid": "ASDFSADF", 
+    "password": "password"
+
+}

@@ -7,14 +7,23 @@ function Login() {
     
     const login = () => {
         const body = { 
-            email : loginEmail,
-            password: loginPassword}
-            axios({
-                method : "post",
-                data : body,
-                withCredentials : true,
-                url : "http://localhost:8000/login"
-            })
+            emailid : loginEmail,
+            password: loginPassword
+        }
+            const config = {
+            method: 'post',
+            url: 'http://localhost:8000/users/login',
+            data : body
+            };
+            axios(config)
+.then((response) => {
+  console.log("acessToken " + response.data.acessToken);
+  localStorage.setItem("acessToken", "Bearer " + response.data.acessToken)
+})
+.catch(function (error) {
+  console.log(error);
+});
+
             }
     return (
 
